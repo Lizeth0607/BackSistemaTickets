@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-11-2021 a las 09:05:13
+-- Tiempo de generación: 26-11-2021 a las 01:30:25
 -- Versión del servidor: 10.4.21-MariaDB
 -- Versión de PHP: 8.0.10
 
@@ -40,6 +40,50 @@ CREATE TABLE `aplicaciones` (
 
 INSERT INTO `aplicaciones` (`id`, `nombre`, `version`, `fecha_compra`) VALUES
 (1, 'SAP', '1.0.0', '2021-11-24');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `archivos`
+--
+
+CREATE TABLE `archivos` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(45) NOT NULL,
+  `link` varchar(100) NOT NULL,
+  `descripcion` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `archivos`
+--
+
+INSERT INTO `archivos` (`id`, `nombre`, `link`, `descripcion`) VALUES
+(1, 'Politicas', 'https://www.google.com', 'Politicas del area de TI');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `empleados`
+--
+
+CREATE TABLE `empleados` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(45) NOT NULL,
+  `apellidos` varchar(45) NOT NULL,
+  `puesto` varchar(45) NOT NULL,
+  `area` varchar(45) NOT NULL,
+  `equipo_id` bigint(20) UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `empleados`
+--
+
+INSERT INTO `empleados` (`id`, `nombre`, `apellidos`, `puesto`, `area`, `equipo_id`) VALUES
+(1, 'Martin', 'Juarez', 'Network Administrator', 'TI', NULL),
+(70013, 'Emilio', 'Andere', 'Becario', 'TI', 5),
+(70014, 'Emilio', 'Andere', 'Becario', 'TI', NULL);
 
 -- --------------------------------------------------------
 
@@ -171,6 +215,26 @@ INSERT INTO `tipos` (`id`, `nombre`) VALUES
 (9, 'Servidor'),
 (7, 'Switch');
 
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `view_asignacion`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `view_asignacion` (
+`Empleado` varchar(91)
+,`Asignado` varchar(29)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `view_asignacion`
+--
+DROP TABLE IF EXISTS `view_asignacion`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_asignacion`  AS SELECT concat(`empleados`.`nombre`,' ',`empleados`.`apellidos`) AS `Empleado`, ifnull(concat('Estacion ',`empleados`.`equipo_id`),'Sin Asignar') AS `Asignado` FROM (`empleados` left join `equipos` on(`empleados`.`equipo_id` = `equipos`.`num_serie`)) ;
+
 --
 -- Índices para tablas volcadas
 --
@@ -181,6 +245,21 @@ INSERT INTO `tipos` (`id`, `nombre`) VALUES
 ALTER TABLE `aplicaciones`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `archivos`
+--
+ALTER TABLE `archivos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `empleados`
+--
+ALTER TABLE `empleados`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `equipo_id_2` (`equipo_id`),
+  ADD KEY `equipo_id` (`equipo_id`);
 
 --
 -- Indices de la tabla `empresas`
@@ -238,6 +317,18 @@ ALTER TABLE `aplicaciones`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT de la tabla `archivos`
+--
+ALTER TABLE `archivos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `empleados`
+--
+ALTER TABLE `empleados`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70016;
+
+--
 -- AUTO_INCREMENT de la tabla `empresas`
 --
 ALTER TABLE `empresas`
@@ -247,7 +338,7 @@ ALTER TABLE `empresas`
 -- AUTO_INCREMENT de la tabla `equipos`
 --
 ALTER TABLE `equipos`
-  MODIFY `num_serie` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `num_serie` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `equipo_aplicacion`
@@ -265,7 +356,7 @@ ALTER TABLE `indicadores`
 -- AUTO_INCREMENT de la tabla `indicador_equipo`
 --
 ALTER TABLE `indicador_equipo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos`
@@ -276,6 +367,12 @@ ALTER TABLE `tipos`
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `empleados`
+--
+ALTER TABLE `empleados`
+  ADD CONSTRAINT `equipo_id_ifbk` FOREIGN KEY (`equipo_id`) REFERENCES `equipos` (`num_serie`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `equipos`
