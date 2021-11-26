@@ -30,6 +30,12 @@ abstract class Model {
         return $data;
     }
 
+    public function where($column, $value){
+        $query = "SELECT * FROM $this->table WHERE $column = $value";
+        $result = $this->getSingleData($query);
+        return $result;
+    }
+
     public function find($id){
         $result = mysqli_query($this->conn, "SELECT * FROM $this->table WHERE $this->table.$this->primaryKey = $id");
         $error = mysqli_error($this->conn);
@@ -46,7 +52,11 @@ abstract class Model {
         $vals = array();
         foreach ($data as $field => $value) {
             array_push($fields, $field);
-            array_push($vals, "'".$value."'");
+            if($value == 'NULL'){
+                array_push($vals, 'NULL');
+            }else{
+                array_push($vals, "'".$value."'");
+            }
         }
         $query = "INSERT INTO $this->table (".join(', ', $fields).") VALUES (".join(', ', $vals).")";
         mysqli_query($this->conn, $query);
@@ -64,7 +74,12 @@ abstract class Model {
     public function update($id, $data = array()){
         $updated = array();
         foreach ($data as $field => $value) {
-            $up = $field." = '".$value."'";
+            if($value == 'NULL'){
+                $up = $field." = NULL";
+            }else{
+                $up = $field." = '".$value."'";
+            }
+            
             array_push($updated, $up);
         }
         $query = "UPDATE $this->table SET ".join(", ", $updated)." WHERE $this->table.$this->primaryKey = $id";
@@ -99,7 +114,11 @@ abstract class Model {
     public function findOrCreate($condition = array(), $data = array()){
         $where = array();
         foreach($condition as $key => $value){
-            $cond = $key." = '".$value."'";
+            if($value == 'NULL'){
+                $cond = $key." = ".$value;
+            }else{
+                $cond = $key." = '".$value."'";
+            }
             array_push($where, $cond);
             $data[$key] = $value;
         }
