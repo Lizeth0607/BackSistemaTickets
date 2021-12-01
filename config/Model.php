@@ -6,7 +6,7 @@ abstract class Model {
     private $cx;
 
     public function __construct(){
-        $this->cx = new Connection('aplicacion');
+        $this->cx = new Connection('api-soporte');
         $this->conn = $this->cx->connect();
     }
 

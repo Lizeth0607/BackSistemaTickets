@@ -21,13 +21,15 @@ class InstalacionController extends Controller {
 
     public function store() {
         $instalacion = new EquipoAplicacion();
-        $equipo = new Equipo();
+        $equipo_id = new EquipoAplicacion();
+        $aplicacion_id = new EquipoAplicacion();
+        /*$equipo = new Equipo();
         $equipo_id = $equipo->findOrCreate(['estacion' => $_POST['estacion']])['id'];
         $aplicacion = new Aplicacion();
-        $aplicacion_id = $aplicacion->findOrCreate(['nombre' => $_POST['aplicacion']])['id'];
+        $aplicacion_id = $aplicacion->findOrCreate(['nombre' => $_POST['aplicacion']])['id'];*/
         $resp = $instalacion->insert([
-            'equipo_id' => $equipo_id,
-            'aplicacion_id' => $aplicacion_id,
+            'equipo_id' => $_POST['equipo_id'],
+            'aplicacion_id' => $_POST['aplicacion_id'],
             'fecha_instalacion' => $_POST['instalacion']
         ]);
         $this->responseJson($resp);

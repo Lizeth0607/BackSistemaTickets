@@ -9,13 +9,14 @@ class EmpleadoController extends Controller {
         $empleados = new Empleado();
         $resp = $empleados->getData("
             SELECT
-                empleados.id,
-                CONCAT(empleados.nombre,' ', empleados.apellidos) AS empleado,
-                empleados.puesto,
-                empleados.area,
-                equipos.num_serie AS `S/N`,
-                equipos.detalles,
-                equipos.compra
+            empleados.id,
+            empleados.nombre,
+            empleados.apellidos,
+            empleados.puesto,
+            empleados.area,
+            equipos.num_serie AS `S/N`,
+            equipos.detalles,
+            equipos.compra
             FROM empleados
             LEFT JOIN equipos ON empleados.equipo_id = equipos.num_serie;
         ");
@@ -27,7 +28,8 @@ class EmpleadoController extends Controller {
         $resp = $empleados->getSingleData("
             SELECT
                 empleados.id,
-                CONCAT(empleados.nombre,' ', empleados.apellidos) AS empleado,
+                empleados.nombre,
+                empleados.apellidos,
                 empleados.puesto,
                 empleados.area,
                 equipos.num_serie AS `S/N`,

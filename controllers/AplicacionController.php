@@ -9,6 +9,7 @@ class AplicacionController extends Controller {
         $app = new Aplicacion();
         $resp = $app->all();
         $this->responseJson($resp);
+       
     }
 
     public function show($id) {

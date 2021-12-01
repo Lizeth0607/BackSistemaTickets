@@ -37,16 +37,18 @@ class TicketController extends Controller {
     public function store(){
         $ticket = new IndicadorEquipo();
         $equipo = new Equipo();
-        $equipo_id = $equipo->findOrCreate(['estacion' => $_POST['estacion']])['id'];
+        //$equipo_id = $equipo->findOrCreate(['estacion' => $_POST['estacion']])['id'];
         $indicador = new Indicador();
-        $indicador_id = $indicador->findOrCreate(['nombre' => $_POST['kpi']])['id'];
+        //$indicador_id = $indicador->findOrCreate(['nombre' => $_POST['kpi']])['id'];
+       
         $resp = $ticket->insert([
-            'equipo_id' => $equipo_id,
-            'indicador_id' => $indicador_id,
+            'equipo_id' => $_POST['equipo_id'],
+            'indicador_id' => $_POST['indicador_id'],
             'problema' => $_POST['problema'],
             'acciones' => NULL,
             'estado' => $_POST['estado'],
-            'fecha_inicio' => $_POST['inicio']
+            'fecha_inicio' => $_POST['inicio'],
+	    'fecha_termino' => $_POST['termino']
         ]);
         $this->responseJson($resp);
     }

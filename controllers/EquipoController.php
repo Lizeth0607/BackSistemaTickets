@@ -40,17 +40,18 @@ class EquipoController extends Controller {
 
     public function store(){
         $empresa = new Empresa();
-        $empresa_id = $empresa->findOrCreate(['nombre' => $_POST['empresa']])['id'];
+        //$empresa_id = $empresa->findOrCreate(['nombre' => $_POST['empresa']])['id'];
         $tipo = new Tipo();
-        $tipo_id = $tipo->findOrCreate(['nombre' => $_POST['tipo']])['id'];
+        //$tipo_id = $tipo->findOrCreate(['nombre' => $_POST['tipo']])['id'];
         $equipo = new Equipo();
         $resp = $equipo->insert([
+	'num_serie' => $_POST['num_serie'],
             'estacion' => $_POST['estacion'],
             'detalles' => $_POST['detalle'],
             'compra' => $_POST['compra'],
             'can_install' => $_POST['install'],
-            'tipo_id' => $tipo_id,
-            'empresa_id' => $empresa_id
+            'tipo_id' => $_POST['tipo_id'],
+            'empresa_id' => $_POST['empresa_id']
         ]);
         $this->responseJson($resp);
     }
@@ -72,9 +73,9 @@ class EquipoController extends Controller {
         $this->responseJson($resp);
     }
 
-    public function destroy($id){
+    public function destroy($num_serie){
         $equipo = new Equipo();
-        $resp = $equipo->delete($id);
+        $resp = $equipo->delete($num_serie);
         $this->responseJson($resp);
     }
 
