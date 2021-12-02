@@ -30,7 +30,7 @@ class TicketController extends Controller {
             FROM indicador_equipo
             INNER JOIN equipos ON equipos.num_serie = indicador_equipo.equipo_id
             INNER JOIN indicadores ON indicadores.id = indicador_equipo.indicador_id
-            // WHERE indicador_equipo.id = $id");
+            WHERE indicador_equipo.id = $id");
         $this->responseJson($resp);
     }
 

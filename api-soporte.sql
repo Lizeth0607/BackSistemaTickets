@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.1.0
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-11-2021 a las 01:30:25
--- Versión del servidor: 10.4.21-MariaDB
--- Versión de PHP: 8.0.10
+-- Tiempo de generación: 02-12-2021 a las 17:38:21
+-- Versión del servidor: 10.4.19-MariaDB
+-- Versión de PHP: 7.3.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `aplicacion`
+-- Base de datos: `api-soporte`
 --
 
 -- --------------------------------------------------------
@@ -39,7 +39,7 @@ CREATE TABLE `aplicaciones` (
 --
 
 INSERT INTO `aplicaciones` (`id`, `nombre`, `version`, `fecha_compra`) VALUES
-(1, 'SAP', '1.0.0', '2021-11-24');
+(1, 'SAP', '1.1', '2021-11-24');
 
 -- --------------------------------------------------------
 
@@ -81,9 +81,7 @@ CREATE TABLE `empleados` (
 --
 
 INSERT INTO `empleados` (`id`, `nombre`, `apellidos`, `puesto`, `area`, `equipo_id`) VALUES
-(1, 'Martin', 'Juarez', 'Network Administrator', 'TI', NULL),
-(70013, 'Emilio', 'Andere', 'Becario', 'TI', 5),
-(70014, 'Emilio', 'Andere', 'Becario', 'TI', NULL);
+(1, 'Martin', 'Juarez', 'Network Administrator', 'TI', NULL);
 
 -- --------------------------------------------------------
 
@@ -102,11 +100,11 @@ CREATE TABLE `empresas` (
 
 INSERT INTO `empresas` (`id`, `nombre`) VALUES
 (12, 'EUA'),
-(5, 'Jalisco'),
 (6, 'Monterrey'),
-(14, 'New York 3'),
+(18, 'NuevaEmpresa'),
 (3, 'Queretaro'),
-(2, 'Saltillo');
+(2, 'Saltillo'),
+(17, 'test');
 
 -- --------------------------------------------------------
 
@@ -129,7 +127,8 @@ CREATE TABLE `equipos` (
 --
 
 INSERT INTO `equipos` (`num_serie`, `estacion`, `detalles`, `compra`, `can_install`, `tipo_id`, `empresa_id`) VALUES
-(5, 1, 'test', '2021-11-24', 0, 8, 5);
+(5, 1, 'test', '2021-11-24', 0, 8, NULL),
+(90, 11, 'testEspecifi', '2021-11-12', 1, 16, NULL);
 
 -- --------------------------------------------------------
 
@@ -169,7 +168,7 @@ CREATE TABLE `indicadores` (
 
 INSERT INTO `indicadores` (`id`, `nombre`, `descripcion`) VALUES
 (1, 'Soporte Tecnico', 'test'),
-(2, '', '');
+(2, 'Soporte tecnico nivel 3', 'soporte tecnico 3');
 
 -- --------------------------------------------------------
 
@@ -184,8 +183,8 @@ CREATE TABLE `indicador_equipo` (
   `problema` text NOT NULL,
   `acciones` text DEFAULT NULL,
   `estado` set('Alto','Bajo','Cerrado') NOT NULL,
-  `fecha_inicio` datetime NOT NULL DEFAULT current_timestamp(),
-  `fecha_termino` datetime DEFAULT NULL
+  `fecha_inicio` date NOT NULL DEFAULT current_timestamp(),
+  `fecha_termino` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -193,7 +192,18 @@ CREATE TABLE `indicador_equipo` (
 --
 
 INSERT INTO `indicador_equipo` (`id`, `equipo_id`, `indicador_id`, `problema`, `acciones`, `estado`, `fecha_inicio`, `fecha_termino`) VALUES
-(1, 5, 1, 'test', 'test', 'Alto', '2021-11-25 01:21:34', NULL);
+(18, 90, 1, 'test', 'test', 'Alto', '0000-00-00', '0000-00-00');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `report_total_services`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `report_total_services` (
+`servicio` varchar(45)
+,`total` bigint(21)
+);
 
 -- --------------------------------------------------------
 
@@ -211,9 +221,12 @@ CREATE TABLE `tipos` (
 --
 
 INSERT INTO `tipos` (`id`, `nombre`) VALUES
+(16, ''),
 (8, 'Camara'),
+(15, 'impresora'),
+(13, 'Scanner'),
 (9, 'Servidor'),
-(7, 'Switch');
+(12, 'w');
 
 -- --------------------------------------------------------
 
@@ -225,6 +238,15 @@ CREATE TABLE `view_asignacion` (
 `Empleado` varchar(91)
 ,`Asignado` varchar(29)
 );
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `report_total_services`
+--
+DROP TABLE IF EXISTS `report_total_services`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `report_total_services`  AS SELECT `indicadores`.`nombre` AS `servicio`, count(0) AS `total` FROM (`indicador_equipo` join `indicadores` on(`indicador_equipo`.`indicador_id` = `indicadores`.`id`)) GROUP BY `indicadores`.`nombre` ;
 
 -- --------------------------------------------------------
 
@@ -314,7 +336,7 @@ ALTER TABLE `tipos`
 -- AUTO_INCREMENT de la tabla `aplicaciones`
 --
 ALTER TABLE `aplicaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `archivos`
@@ -326,43 +348,43 @@ ALTER TABLE `archivos`
 -- AUTO_INCREMENT de la tabla `empleados`
 --
 ALTER TABLE `empleados`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70016;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70035;
 
 --
 -- AUTO_INCREMENT de la tabla `empresas`
 --
 ALTER TABLE `empresas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `equipos`
 --
 ALTER TABLE `equipos`
-  MODIFY `num_serie` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `num_serie` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1234567900;
 
 --
 -- AUTO_INCREMENT de la tabla `equipo_aplicacion`
 --
 ALTER TABLE `equipo_aplicacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT de la tabla `indicadores`
 --
 ALTER TABLE `indicadores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `indicador_equipo`
 --
 ALTER TABLE `indicador_equipo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos`
 --
 ALTER TABLE `tipos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Restricciones para tablas volcadas

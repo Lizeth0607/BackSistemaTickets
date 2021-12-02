@@ -14,7 +14,7 @@ class EmpleadoController extends Controller {
             empleados.apellidos,
             empleados.puesto,
             empleados.area,
-            equipos.num_serie AS `S/N`,
+            equipos.num_serie AS `equipo_id`,
             equipos.detalles,
             equipos.compra
             FROM empleados
@@ -63,7 +63,7 @@ class EmpleadoController extends Controller {
             'apellidos' => $_POST['apellidos'],
             'puesto' => $_POST['puesto'],
             'area' => $_POST['area'],
-            'equipo_id' => array_key_exists('equipo', $_POST) ? $_POST['equipo'] : 'NULL'
+            'equipo_id' => array_key_exists('equipo_id', $_POST) ? $_POST['equipo_id'] : 'NULL'
         ]);
         $this->responseJson($resp);
     }

@@ -30,7 +30,7 @@ class InstalacionController extends Controller {
         $resp = $instalacion->insert([
             'equipo_id' => $_POST['equipo_id'],
             'aplicacion_id' => $_POST['aplicacion_id'],
-            'fecha_instalacion' => $_POST['instalacion']
+            'fecha_instalacion' => $_POST['fecha_instalacion']
         ]);
         $this->responseJson($resp);
     }
@@ -38,13 +38,13 @@ class InstalacionController extends Controller {
     public function update($id) {
         $instalacion = new EquipoAplicacion();
         $equipo = new Equipo();
-        $equipo_id = $equipo->findOrCreate(['estacion' => $_POST['estacion']])['id'];
+        //$equipo_id = $equipo->findOrCreate(['estacion' => $_POST['estacion']])['id'];
         $aplicacion = new Aplicacion();
-        $aplicacion_id = $aplicacion->findOrCreate(['nombre' => $_POST['aplicacion']])['id'];
+        //$aplicacion_id = $aplicacion->findOrCreate(['nombre' => $_POST['aplicacion']])['id'];
         $resp = $instalacion->update($id, [
-            'equipo_id' => $equipo_id,
-            'aplicacion_id' => $aplicacion_id,
-            'fecha_instalacion' => $_POST['instalacion']
+            'equipo_id' => $_POST['equipo_id'],
+            'aplicacion_id' => $_POST['aplicacion_id'],
+            'fecha_instalacion' => $_POST['fecha_instalacion']
         ]);
         $this->responseJson($resp);
     }
